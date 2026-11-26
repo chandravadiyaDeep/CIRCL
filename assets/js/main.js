@@ -3,7 +3,7 @@
   const intro=document.getElementById('intro');
   const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function finishIntro(){if(intro){intro.classList.add('done');document.body.classList.remove('locked');}}
-  if(intro){document.body.classList.add('locked');if(reduceMotion){finishIntro();}else{const t=setTimeout(finishIntro,4900);document.getElementById('skipIntro')?.addEventListener('click',()=>{clearTimeout(t);finishIntro();});}}
+  if(intro){document.body.classList.add('locked');if(reduceMotion){finishIntro();}else{const t=setTimeout(finishIntro,10300);document.getElementById('skipIntro')?.addEventListener('click',()=>{clearTimeout(t);finishIntro();});}}
   document.getElementById('year')?.append(String(new Date().getFullYear()));
   const toggle=document.getElementById('menuToggle'),nav=document.getElementById('mainNav');
   toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(open));nav?.classList.toggle('open',open);});
