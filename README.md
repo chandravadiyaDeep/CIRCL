@@ -1,51 +1,52 @@
-# CIRCL — Creator Network
+# CIRCL — Independent Creator Network
 
-CIRCL is an independent, Instagram-first creator network for Indian lifestyle creators. The website explains organic creator discovery, collaboration, transparent measurement and participation guidelines.
+CIRCL is an Instagram-first creator network for India's fashion and lifestyle creators. The website is built as a React + TypeScript application with Vite and Framer Motion, designed around an editorial monochrome identity.
 
-## Website
+## Stack
 
-- `index.html` — animated homepage
-- `about.html` — brand story
-- `why-circl.html` — creator benefits
-- `how-it-works.html` — organic discovery process
-- `transparency.html` — tracking and measurement principles
-- `guidelines.html` — creator guidelines and operating agreement
-- `join.html` — creator application
-- `privacy.html` and `terms.html` — draft legal documents
+- React 19 + TypeScript
+- Vite build system
+- Framer Motion for motion and transitions
+- Lucide React icons
+- React Router with hash-based routing for GitHub Pages
+- Custom responsive CSS
 
-## Configure before launch
+## Local development
 
-Edit the `CIRCL_CONFIG` object in `index.html`:
+```bash
+npm install
+npm run dev
+```
 
-- `instagramUrl`: official CIRCL Instagram profile URL
-- `channelUrl`: official Instagram Broadcast Channel invitation URL
-- `applicationUrl`: reserved for a future secure application endpoint
-- `analyticsEndpoint`: optional HTTPS endpoint for referral click events
+Production build:
 
-The creator application currently prepares a local email draft to `hello@circl.network`. It does not submit data to a server. Configure a monitored contact address or secure form provider before accepting applications publicly.
+```bash
+npm run build
+npm run preview
+```
 
-The referral script can record a referral identifier in session storage and optionally send a click event to a configured endpoint. With no endpoint configured, no analytics event is transmitted. A referral click is not proof of a channel join or creator follow.
+## GitHub Pages deployment
 
-## GitHub Pages
+The repository includes `.github/workflows/deploy.yml`. Configure **Settings → Pages → Build and deployment → Source → GitHub Actions**. Pushes to `main` build the Vite app and deploy the `dist` directory.
 
-1. Open **Settings → Pages** in this repository.
-2. Under **Build and deployment**, select **Deploy from a branch**.
-3. Select branch `main` and folder `/ (root)`.
-4. Save and wait for GitHub Pages to publish.
-5. The expected project URL is `https://chandravadiyaDeep.github.io/CIRCL/`, subject to Pages being enabled.
+The app is configured with Vite base path `/CIRCL/` and hash routing, so routes work on GitHub Pages without a server rewrite.
 
-Alternatively configure GitHub Actions as the Pages build source if you later add a Pages deployment workflow.
+## Before public creator onboarding
 
-## Important pre-launch checks
+1. Set the official CIRCL Instagram URL in `src/App.tsx`.
+2. Connect a secure creator application backend or form service. The current application form only prepares/copies an application locally; it does not upload or store data.
+3. Add a real referral analytics endpoint before describing referral click tracking as active.
+4. Complete the Privacy Policy and Terms with the actual operator identity, contact address, service providers, retention rules and applicable legal review.
+5. Replace editorial image URLs with owned/licensed brand photography when available.
+6. Test the deployed site on mobile and desktop.
 
-- Add the real Instagram profile and Broadcast Channel invitation links.
-- Confirm a monitored support/privacy contact and the operator's legal identity.
-- Have Privacy Policy, Terms and Creator Agreement reviewed and completed for the actual operator, data providers, retention periods and applicable law.
-- Connect a secure application backend/form before collecting applications at scale.
-- Configure a real referral analytics endpoint before describing click tracking as active.
-- Test all pages and links on mobile and desktop.
-- Respect reduced-motion preferences. The homepage intro is skippable and automatically finishes.
+## Product principles
 
-## Scope
+- Organic discovery, not guaranteed follower counts
+- No follow-for-follow or artificial engagement
+- Creator ownership of original content
+- Permission before reposting or reuse
+- Transparent reporting with clear attribution limits
+- Instagram is the initial and only community platform
 
-The initial product is for organic creator networking only. No advertising marketplace, payments, paid subscriptions, follower exchange or guaranteed growth claims are included.
+The site does not include advertising sales, payments, subscriptions or monetization features.
