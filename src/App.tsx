@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowDown, ArrowLeft, ArrowUpRight, Check, CircleDot, Menu, MoveUpRight, Sparkles, X } from "lucide-react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
-const instagramUrl = "https://www.instagram.com/"; // Replace with the official CIRCL profile before launch.
+const instagramUrl = ""; // Set this to the verified CIRCL Instagram profile before launch.
 
 const fadeUp = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: "easeOut" } } };
 
@@ -100,7 +100,7 @@ function Home() {
 }
 
 function Footer() {
-  return <footer className="footer"><div className="footer-main"><div><Brand light /><p>A circle of creators.<br />A culture of shared discovery.</p></div><div className="footer-column"><span>EXPLORE</span><Link to="/about">Our story</Link><Link to="/how-it-works">How it works</Link><Link to="/join">Become a creator</Link></div><div className="footer-column"><span>PRINCIPLES</span><Link to="/guidelines">Creator standards</Link><Link to="/transparency">Transparency</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link></div><div className="footer-column"><span>CONNECT</span><a href={instagramUrl} target="_blank" rel="noreferrer">Instagram <ArrowUpRight size={12} /></a><a href="mailto:contact@circl.community">Contact <ArrowUpRight size={12} /></a></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} CIRCL. ALL RIGHTS RESERVED.</span><span>INDEPENDENT BY DESIGN. CONNECTED BY CHOICE.</span></div></footer>;
+  return <footer className="footer"><div className="footer-main"><div><Brand light /><p>A circle of creators.<br />A culture of shared discovery.</p></div><div className="footer-column"><span>EXPLORE</span><Link to="/about">Our story</Link><Link to="/how-it-works">How it works</Link><Link to="/join">Become a creator</Link></div><div className="footer-column"><span>PRINCIPLES</span><Link to="/guidelines">Creator standards</Link><Link to="/transparency">Transparency</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link></div><div className="footer-column"><span>CONNECT</span>{instagramUrl ? <a href={instagramUrl} target="_blank" rel="noreferrer">Instagram <ArrowUpRight size={12} /></a> : <span className="footer-pending">Instagram profile to be connected</span>}<Link to="/join">Creator enquiries <ArrowUpRight size={12} /></Link></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} CIRCL. ALL RIGHTS RESERVED.</span><span>INDEPENDENT BY DESIGN. CONNECTED BY CHOICE.</span></div></footer>;
 }
 
 const pageContent: Record<string, { tag: string; title: string; intro: string; blocks: [string,string][] }> = {
