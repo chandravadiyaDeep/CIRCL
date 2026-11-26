@@ -93,6 +93,78 @@ function CreatorVisual({ variant = "network" }: { variant?: string }) {
   </div>;
 }
 
+
+type VisualCreator = { name: string; handle: string; initials: string; followers: string; detail: string };
+const visualCreators: VisualCreator[] = [
+  { name: "Mira Shah", handle: "@mira.creates", initials: "MS", followers: "18.4K", detail: "Personal style and everyday inspiration." },
+  { name: "Aarav Mehta", handle: "@aarav.frames", initials: "AM", followers: "12.8K", detail: "City life, visual stories and creative routines." },
+  { name: "Ishita Rao", handle: "@ishita.edit", initials: "IR", followers: "24.1K", detail: "Beauty rituals and thoughtful reviews." },
+  { name: "Kabir Patel", handle: "@kabir.makes", initials: "KP", followers: "9.6K", detail: "Design, culture and independent creativity." }
+];
+
+function CreatorPeek({ creator, onClose }: { creator: VisualCreator; onClose: () => void }) {
+  return <motion.div className="story-creator-peek" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}>
+    <span className="story-peek-avatar">{creator.initials}</span>
+    <span className="story-peek-copy"><strong>{creator.name}</strong><small>{creator.handle} · {creator.followers} sample followers</small><small>{creator.detail}</small></span>
+    <button type="button" onClick={onClose} aria-label="Close creator preview"><X size={14} /></button>
+  </motion.div>;
+}
+
+function ReachVisual() {
+  const [selected, setSelected] = useState<number | null>(null);
+  return <div className="story-visual story-reach">
+    <div className="story-visual-kicker"><span>01 / REACH FURTHER</span><span>DISCOVERY</span></div>
+    <div className="reach-headline"><span>One story.</span><strong>More eyes<br/><em>on your work.</em></strong><small>Shared discovery can introduce your content to new audiences.</small></div>
+    <div className="reach-stage">
+      <div className="reach-bars" aria-label="Illustrative reach expanding over time">
+        {[30,43,56,68,82,100].map((height,i)=><motion.span key={i} initial={{height:0}} whileInView={{height:`${height}%`}} viewport={{once:true}} transition={{duration:.55,delay:i*.09}} />)}
+      </div>
+      <div className="reach-stage-label"><strong>DISCOVERED</strong><span>YOUR CIRCLE → NEW AUDIENCES</span></div>
+      <div className="reach-audience">{visualCreators.slice(0,3).map((creator,i)=><button key={creator.handle} type="button" className={`reach-person reach-person-${i}`} onClick={()=>setSelected(i)} aria-label={`Preview ${creator.name}`}>{creator.initials}</button>)}</div>
+    </div>
+    <div className="story-visual-foot"><span>MORE DISCOVERY OPPORTUNITIES</span><span>ILLUSTRATIVE VISUAL</span></div>
+    <AnimatePresence>{selected!==null&&<CreatorPeek creator={visualCreators[selected]} onClose={()=>setSelected(null)} />}</AnimatePresence>
+  </div>;
+}
+
+function ConnectVisual() {
+  const [selected, setSelected] = useState<number | null>(null);
+  return <div className="story-visual story-connect">
+    <div className="story-visual-kicker"><span>02 / FIND YOUR PEOPLE</span><span>CONNECTION</span></div>
+    <div className="connect-heading"><strong>Good people<br/><em>know good people.</em></strong><small>Meet creators beyond your usual feed.</small></div>
+    <div className="connect-map">
+      <svg viewBox="0 0 340 190" role="img" aria-label="Creators connected through shared interests">
+        <path d="M170 95 L76 43 M170 95 L265 43 M170 95 L75 151 M170 95 L265 151 M76 43 L265 43 M75 151 L265 151" fill="none" stroke="#a99a80" strokeWidth="1.4" strokeDasharray="4 5" opacity=".8"/>
+        <circle cx="170" cy="95" r="45" fill="none" stroke="#a99a80" strokeOpacity=".24"/><circle cx="170" cy="95" r="34" fill="#c3b292"/><text x="170" y="91" textAnchor="middle" fill="#1b1b18" fontSize="10" fontWeight="700">CIRCL</text><text x="170" y="105" textAnchor="middle" fill="#1b1b18" fontSize="6" letterSpacing="1">TOGETHER</text>
+      </svg>
+      {visualCreators.map((creator,i)=><button key={creator.handle} type="button" className={`connect-node connect-node-${i}`} onClick={()=>setSelected(i)} aria-label={`Preview ${creator.name}`}><span>{creator.initials}</span><small>{creator.name.split(" ")[0]}</small></button>)}
+    </div>
+    <div className="connect-caption"><span>4 CREATOR VOICES</span><span>1 SHARED SPACE</span></div>
+    <div className="story-visual-foot"><span>INTRODUCTIONS THAT FEEL HUMAN</span><span>DEMO NETWORK</span></div>
+    <AnimatePresence>{selected!==null&&<CreatorPeek creator={visualCreators[selected]} onClose={()=>setSelected(null)} />}</AnimatePresence>
+  </div>;
+}
+
+function NetworkVisual() {
+  const [selected, setSelected] = useState<number | null>(null);
+  const nodes = [{x:16,y:23,n:0},{x:45,y:13,n:1},{x:77,y:21,n:2},{x:89,y:48,n:3},{x:72,y:77,n:0},{x:43,y:87,n:2},{x:13,y:70,n:1},{x:31,y:48,n:3},{x:62,y:48,n:1},{x:53,y:29,n:0},{x:25,y:84,n:3},{x:83,y:88,n:2}];
+  return <div className="story-visual story-network">
+    <div className="story-visual-kicker"><span>03 / BIGGER TOGETHER</span><span>THE NETWORK</span></div>
+    <div className="network-heading"><strong>One circle.<br/><em>Countless connections.</em></strong><small>A wider creator community creates more paths to discover and collaborate.</small></div>
+    <div className="network-field">
+      <svg viewBox="0 0 360 210" role="img" aria-label="Illustration of a broad network of connected creators">
+        {nodes.map((node,i)=>{const next=nodes[(i+3)%nodes.length];return <line key={i} x1={node.x*3.6} y1={node.y*2.1} x2={next.x*3.6} y2={next.y*2.1} stroke="#b9a98c" strokeOpacity=".38" strokeWidth="1"/>})}
+        {nodes.map((node,i)=><circle key={i} cx={node.x*3.6} cy={node.y*2.1} r={i%3===0?3:2} fill="#c5b394" opacity=".85"/>)}
+      </svg>
+      <div className="network-core"><span>◉</span><strong>CIRCL</strong><small>CREATOR NETWORK</small></div>
+      {nodes.map((node,i)=><button key={i} type="button" className={`network-node network-node-${i}`} style={{left:`${node.x}%`,top:`${node.y}%`}} onClick={()=>setSelected(node.n)} aria-label={`Preview ${visualCreators[node.n].name}`}>{visualCreators[node.n].initials}</button>)}
+    </div>
+    <div className="network-stats"><span><strong>12</strong><small>DEMO NODES</small></span><span><strong>4</strong><small>CREATOR PROFILES</small></span><span><strong>∞</strong><small>POSSIBLE CONNECTIONS</small></span></div>
+    <div className="story-visual-foot"><span>A COMMUNITY THAT KEEPS EXPANDING</span><span>ILLUSTRATIVE MAP</span></div>
+    <AnimatePresence>{selected!==null&&<CreatorPeek creator={visualCreators[selected]} onClose={()=>setSelected(null)} />}</AnimatePresence>
+  </div>;
+}
+
 function Home() {
   return <>
     <Intro /><Header />
@@ -111,9 +183,9 @@ function Home() {
 
       <section className="editorial section-pad" id="network"><div className="editorial-heading"><Eyebrow>02 / THE NETWORK</Eyebrow><h2>Different worlds.<br /><em>One shared space.</em></h2><p>From personal style to everyday rituals, we bring together creators whose perspectives deserve to travel further.</p></div>
         <div className="category-grid">
-          <Reveal className="category-card"><div className="category-photo"><CreatorVisual variant="fashion" /></div><div className="category-meta"><span>01 / STYLE</span><h3>Fashion &<br />personal style</h3><ArrowUpRight size={18} /></div></Reveal>
-          <Reveal className="category-card category-offset"><div className="category-photo"><CreatorVisual variant="lifestyle" /></div><div className="category-meta"><span>02 / EVERYDAY</span><h3>Daily<br />living</h3><ArrowUpRight size={18} /></div></Reveal>
-          <Reveal className="category-card category-low"><div className="category-photo"><CreatorVisual variant="beauty" /></div><div className="category-meta"><span>03 / EXPRESSION</span><h3>Beauty &<br />grooming</h3><ArrowUpRight size={18} /></div></Reveal>
+          <Reveal className="category-card"><div className="category-photo"><ReachVisual /></div><div className="category-meta"><span>01 / STYLE</span><h3>Fashion &<br />personal style</h3><ArrowUpRight size={18} /></div></Reveal>
+          <Reveal className="category-card category-offset"><div className="category-photo"><ConnectVisual /></div><div className="category-meta"><span>02 / EVERYDAY</span><h3>Daily<br />living</h3><ArrowUpRight size={18} /></div></Reveal>
+          <Reveal className="category-card category-low"><div className="category-photo"><NetworkVisual /></div><div className="category-meta"><span>03 / EXPRESSION</span><h3>Beauty &<br />grooming</h3><ArrowUpRight size={18} /></div></Reveal>
         </div><div className="category-note"><span>CURATED CREATORS, NOT CROWDED FEEDS.</span><span>INDIA / FIRST CIRCLE</span></div>
       </section>
 
