@@ -1,11 +1,11 @@
 import { useEffect, useState, type ReactNode, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Check, CircleDot, Menu, MoveUpRight, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUpRight, Check, CircleDot, Menu, MoveUpRight, Sparkles, X } from "lucide-react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 const instagramUrl = "https://www.instagram.com/"; // Replace with the official CIRCL profile before launch.
 
-const fadeUp = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } } };
+const fadeUp = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: "easeOut" } } };
 
 function Intro() {
   const reduceMotion = useReducedMotion();
