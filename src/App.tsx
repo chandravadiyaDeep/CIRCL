@@ -92,7 +92,8 @@ function CreatorVisual({ variant = "network" }: { variant?: string }) {
     <div className="visual-footline"><span>DISCOVERY BY CONNECTION</span><span>NOT A GROWTH PROMISE</span></div>
   </div>;
 }
-\nfunction Home() {
+
+function Home() {
   return <>
     <Intro /><Header />
     <main>
