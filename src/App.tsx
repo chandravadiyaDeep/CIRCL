@@ -58,12 +58,46 @@ function Eyebrow({ children, light = false }: { children: ReactNode; light?: boo
   return <div className={"eyebrow " + (light ? "eyebrow-light" : "")}><span />{children}</div>;
 }
 
-function Home() {
+
+const demoCreators = [
+  { name: "Mira Shah", handle: "@mira.creates", category: "STYLE & CULTURE", initials: "MS", followers: "18.4K", note: "Personal style, considered details and everyday inspiration." },
+  { name: "Aarav Mehta", handle: "@aarav.frames", category: "LIFESTYLE", initials: "AM", followers: "12.8K", note: "Visual stories, city life and creative routines." },
+  { name: "Ishita Rao", handle: "@ishita.edit", category: "BEAUTY & GROOMING", initials: "IR", followers: "24.1K", note: "Beauty rituals, thoughtful reviews and self-expression." }
+];
+
+function CreatorVisual({ variant = "network" }: { variant?: string }) {
+  const [selected, setSelected] = useState<number | null>(null);
+  const active = selected === null ? null : demoCreators[selected];
+  return <div className={`creator-visual creator-visual-${variant}`}>
+    <div className="visual-orbit visual-orbit-one" /><div className="visual-orbit visual-orbit-two" />
+    <div className="visual-topline"><span>CIRCL / CREATOR NETWORK</span><span>LIVE CONCEPT</span></div>
+    <div className="visual-growth">
+      <div className="visual-growth-copy"><span>COMMUNITY MOMENTUM</span><strong>Growing, <em>together.</em></strong><small>Illustrative follower activity — not live results</small></div>
+      <div className="visual-metric"><span>NETWORK REACH</span><strong>1.2K <i>↗</i></strong><small>to 1.8K · sample data</small></div>
+    </div>
+    <svg className="visual-chart" viewBox="0 0 520 150" role="img" aria-label="Illustrative upward community growth line">
+      <defs><linearGradient id={`growth-fill-${variant}`} x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#b9a98c" stopOpacity=".32" /><stop offset="100%" stopColor="#b9a98c" stopOpacity="0" /></linearGradient></defs>
+      {[35,75,115].map(y => <line key={y} x1="0" x2="520" y1={y} y2={y} stroke="currentColor" opacity=".12" strokeDasharray="3 7" />)}
+      <motion.path d="M0 126 C48 118 54 104 100 108 S158 92 196 96 S248 68 290 77 S354 53 388 58 S456 23 520 15 L520 150 L0 150Z" fill={`url(#growth-fill-${variant})`} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1.1 }} />
+      <motion.path d="M0 126 C48 118 54 104 100 108 S158 92 196 96 S248 68 290 77 S354 53 388 58 S456 23 520 15" fill="none" stroke="#b9a98c" strokeWidth="2.4" strokeLinecap="round" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.8, ease: "easeOut" }} />
+      <circle cx="520" cy="15" r="5" fill="#d7c5a4" /><circle cx="520" cy="15" r="10" fill="none" stroke="#d7c5a4" opacity=".35" />
+    </svg>
+    <div className="visual-profiles-heading"><span>MEET THE CREATORS</span><span>TAP TO PREVIEW ↗</span></div>
+    <div className="visual-profiles">{demoCreators.map((creator,index) => <button type="button" className={`visual-profile visual-profile-${index} ${selected === index ? "is-selected" : ""}`} key={creator.handle} onClick={() => setSelected(selected === index ? null : index)} aria-pressed={selected === index}>
+      <span className="visual-avatar">{creator.initials}</span><span className="visual-profile-text"><strong>{creator.name}</strong><small>{creator.category}</small></span><span className="visual-profile-arrow">↗</span>
+    </button>)}</div>
+    <AnimatePresence>{active && <motion.div className="visual-profile-detail" initial={{ opacity: 0, y: 9 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 9 }} transition={{ duration: .22 }}>
+      <div className="visual-avatar visual-avatar-large">{active.initials}</div><div className="visual-detail-copy"><span>CREATOR PREVIEW · DEMO PROFILE</span><strong>{active.name} <small>{active.handle}</small></strong><p>{active.note}</p><small>{active.followers} followers · illustrative sample</small></div><button type="button" onClick={() => setSelected(null)} aria-label="Close creator preview"><X size={15} /></button>
+    </motion.div>}</AnimatePresence>
+    <div className="visual-footline"><span>DISCOVERY BY CONNECTION</span><span>NOT A GROWTH PROMISE</span></div>
+  </div>;
+}
+\nfunction Home() {
   return <>
     <Intro /><Header />
     <main>
       <section className="hero">
-        <div className="hero-image" role="img" aria-label="Editorial fashion portrait in monochrome"><div className="hero-image-shade" /><div className="hero-image-caption"><span>INDEPENDENT CREATOR NETWORK</span><span>EST. 2026 · INDIA</span></div><div className="hero-image-index">01 — 04</div></div>
+        <div className="hero-image"><CreatorVisual variant="hero" /><div className="hero-image-shade" /><div className="hero-image-caption"><span>INDEPENDENT CREATOR NETWORK</span><span>EST. 2026 · INDIA</span></div><div className="hero-image-index">01 — 04</div></div>
         <div className="hero-content"><Eyebrow>THE ART OF GROWING TOGETHER</Eyebrow><h1>Good things<br />happen in a <em>circle.</em></h1><p className="hero-description">A considered network of creators, connected by shared discovery, creative exchange and the belief that growth feels better together.</p>
           <div className="hero-buttons"><Link to="/join" className="button button-black">Become a founding creator <ArrowUpRight size={15} /></Link><button className="button-text" onClick={() => document.getElementById("philosophy")?.scrollIntoView({ behavior: "smooth" })}>Discover CIRCL <ArrowDown size={14} /></button></div>
           <div className="hero-footnote"><span className="tiny-ring" /> ORGANIC BY NATURE. COLLABORATIVE BY DESIGN.</div>
@@ -76,19 +110,19 @@ function Home() {
 
       <section className="editorial section-pad" id="network"><div className="editorial-heading"><Eyebrow>02 / THE NETWORK</Eyebrow><h2>Different worlds.<br /><em>One shared space.</em></h2><p>From personal style to everyday rituals, we bring together creators whose perspectives deserve to travel further.</p></div>
         <div className="category-grid">
-          <Reveal className="category-card"><div className="category-photo photo-fashion" /><div className="category-meta"><span>01 / STYLE</span><h3>Fashion &<br />personal style</h3><ArrowUpRight size={18} /></div></Reveal>
-          <Reveal className="category-card category-offset"><div className="category-photo photo-lifestyle" /><div className="category-meta"><span>02 / EVERYDAY</span><h3>Daily<br />living</h3><ArrowUpRight size={18} /></div></Reveal>
-          <Reveal className="category-card category-low"><div className="category-photo photo-beauty" /><div className="category-meta"><span>03 / EXPRESSION</span><h3>Beauty &<br />grooming</h3><ArrowUpRight size={18} /></div></Reveal>
+          <Reveal className="category-card"><div className="category-photo"><CreatorVisual variant="fashion" /></div><div className="category-meta"><span>01 / STYLE</span><h3>Fashion &<br />personal style</h3><ArrowUpRight size={18} /></div></Reveal>
+          <Reveal className="category-card category-offset"><div className="category-photo"><CreatorVisual variant="lifestyle" /></div><div className="category-meta"><span>02 / EVERYDAY</span><h3>Daily<br />living</h3><ArrowUpRight size={18} /></div></Reveal>
+          <Reveal className="category-card category-low"><div className="category-photo"><CreatorVisual variant="beauty" /></div><div className="category-meta"><span>03 / EXPRESSION</span><h3>Beauty &<br />grooming</h3><ArrowUpRight size={18} /></div></Reveal>
         </div><div className="category-note"><span>CURATED CREATORS, NOT CROWDED FEEDS.</span><span>INDIA / FIRST CIRCLE</span></div>
       </section>
 
-      <section className="statement-band"><div className="statement-photo" /><div className="statement-copy"><Eyebrow light>THE CIRCL PRINCIPLE</Eyebrow><h2>Reach is an outcome.<br /><em>Connection is the beginning.</em></h2><p>We don't promise a number. We create the conditions for meaningful discovery — through introductions, shared stories and creative collaborations.</p><Link to="/transparency" className="light-link">How we measure what matters <ArrowUpRight size={14} /></Link></div></section>
+      <section className="statement-band"><div className="statement-photo"><CreatorVisual variant="statement" /></div><div className="statement-copy"><Eyebrow light>THE CIRCL PRINCIPLE</Eyebrow><h2>Reach is an outcome.<br /><em>Connection is the beginning.</em></h2><p>We don't promise a number. We create the conditions for meaningful discovery — through introductions, shared stories and creative collaborations.</p><Link to="/transparency" className="light-link">How we measure what matters <ArrowUpRight size={14} /></Link></div></section>
 
       <section className="method section-pad" id="method"><div className="method-intro"><Eyebrow>03 / THE METHOD</Eyebrow><h2>Simple by design.<br /><em>Powerful together.</em></h2><p>One Instagram-first network. A clear process. Room for every creator to bring their own voice.</p><Link to="/how-it-works" className="underlined-link">Explore the process <ArrowUpRight size={14} /></Link></div>
         <div className="method-steps">{[["01","Come into the circle","Creators join a shared network built on relevance, respect and mutual participation."],["02","Invite your people","Share your personal CIRCL invitation with your Instagram audience — in your own voice."],["03","Discover each other","Explore creator stories, profiles and perspectives. Follow only the voices that genuinely interest you."],["04","Make something together","Create collaborative Reels, introductions and content that brings different communities closer."]].map(([n,title,copy]) => <Reveal key={n} className="method-step"><span className="step-number">{n}</span><div><h3>{title}</h3><p>{copy}</p></div><ArrowUpRight size={17} /></Reveal>)}</div>
       </section>
 
-      <section className="feature-spread"><div className="feature-photo" /><div className="feature-copy"><Eyebrow>04 / THE CREATOR EXPERIENCE</Eyebrow><h2>Your next<br />connection could<br />change <em>everything.</em></h2><p>Be part of a network where your work is seen in new contexts, your ideas meet new perspectives and collaboration becomes part of the creative journey.</p><div className="feature-points"><span><Check size={14} /> Relevant creator introductions</span><span><Check size={14} /> Collaborative content opportunities</span><span><Check size={14} /> Clear participation standards</span><span><Check size={14} /> Transparent campaign reporting</span></div><Link to="/join" className="button button-black">Apply for the first circle <ArrowUpRight size={15} /></Link></div></section>
+      <section className="feature-spread"><div className="feature-photo"><CreatorVisual variant="feature" /></div><div className="feature-copy"><Eyebrow>04 / THE CREATOR EXPERIENCE</Eyebrow><h2>Your next<br />connection could<br />change <em>everything.</em></h2><p>Be part of a network where your work is seen in new contexts, your ideas meet new perspectives and collaboration becomes part of the creative journey.</p><div className="feature-points"><span><Check size={14} /> Relevant creator introductions</span><span><Check size={14} /> Collaborative content opportunities</span><span><Check size={14} /> Clear participation standards</span><span><Check size={14} /> Transparent campaign reporting</span></div><Link to="/join" className="button button-black">Apply for the first circle <ArrowUpRight size={15} /></Link></div></section>
 
       <section className="trust-section section-pad"><div className="trust-head"><Eyebrow>05 / BUILT ON TRUST</Eyebrow><h2>Nothing hidden.<br /><em>Nothing artificial.</em></h2><p>Trust is built through clear expectations and honest reporting. Here is what CIRCL stands for.</p></div>
         <div className="trust-grid"><Reveal className="trust-card"><span>01</span><CircleDot size={22} /><h3>Organic discovery</h3><p>No bought followers, forced follows or artificial engagement. People choose who they follow.</p></Reveal><Reveal className="trust-card"><span>02</span><Sparkles size={22} /><h3>Creator ownership</h3><p>Your content stays yours. Reuse and reposting require your permission.</p></Reveal><Reveal className="trust-card"><span>03</span><MoveUpRight size={22} /><h3>Visible measurement</h3><p>We explain the source and limits of every metric we report.</p></Reveal></div><Link to="/transparency" className="underlined-link">Read our transparency principles <ArrowUpRight size={14} /></Link>
