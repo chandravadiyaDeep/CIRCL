@@ -59,7 +59,7 @@ The Join form posts to `https://circl-api.onrender.com/api/applications`. The ba
 
 1. In Render, create a new **Web Service** from this repository and use the included `render.yaml` blueprint (or set root directory to `backend`, build command `npm install`, start command `npm start`).
 2. Keep the persistent disk mounted at `/var/data`. The included Render configuration uses a paid Starter web service because free instances do not provide persistent disks. Do not remove the disk or the JSON file can be lost.
-3. In Resend, create an API key and verify a sender domain you control. Set `RESEND_API_KEY` and `EMAIL_FROM` in the Render environment. `EMAIL_FROM` must use the verified domain, for example `CIRCL Applications <applications@your-domain.com>`.
+3. In the Google Account used for `deepchandravadiya593@gmail.com`, enable 2-Step Verification and create an App Password (Google Account → Security → App passwords). Set `GMAIL_USER=deepchandravadiya593@gmail.com`, `GMAIL_APP_PASSWORD` to the generated 16-character password, and `EMAIL_FROM=deepchandravadiya593@gmail.com` in Render. Never use your normal Gmail password.
 4. Keep `EMAIL_TO` set to `deepchandravadiya593@gmail.com`. Render generates `ADMIN_API_KEY` from the blueprint; save it privately.
 5. The Render service URL should be `https://circl-api.onrender.com` to match the website's configured API URL. If Render assigns another name, update `APPLICATION_API_URL` in `src/App.tsx` and redeploy GitHub Pages.
 6. Test `https://circl-api.onrender.com/health`; it should return JSON with `ok: true`.
@@ -75,4 +75,4 @@ The API saves an application before attempting email delivery. If email delivery
 
 ### Required account setup
 
-The code and Render configuration are prepared in this repository, but the owner must connect their Render account, create/retain the persistent disk, and add the Resend API key plus a verified sender domain. Those credentials cannot safely be created or guessed from this repository.
+The code and Render configuration are prepared in this repository, but the owner must connect their Render account, create/retain the persistent disk, and generate/add a Google App Password. Those credentials cannot safely be created or guessed from this repository.
