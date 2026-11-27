@@ -223,7 +223,7 @@ function InfoPage({ page }: { page: string }) {
   return <><Header /><main className="info-page"><section className="info-hero"><Eyebrow light>{data.tag}</Eyebrow><h1>{data.title}</h1><p>{data.intro}</p></section><section className="info-body">{data.blocks.map(([title,copy],i)=><Reveal key={title} className="info-block"><span>{String(i+1).padStart(2,"0")}</span><div><h2>{title}</h2><p>{copy}</p></div></Reveal>)}<div className="info-back"><Link to="/" className="underlined-link"><ArrowLeft size={14} /> Back to CIRCL</Link></div></section></main><Footer /></>;
 }
 
-const APPLICATION_API_URL = import.meta.env.VITE_APPLICATION_API_URL || "https://circl-api.onrender.com";
+const APPLICATION_API_URL = "https://circl-api.onrender.com";
 
 function JoinPage() {
   const [form,setForm]=useState({name:"",email:"",instagram:"",category:"",followers:"",location:"",reason:""});
