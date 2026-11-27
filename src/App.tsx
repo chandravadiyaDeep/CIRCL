@@ -223,36 +223,45 @@ function InfoPage({ page }: { page: string }) {
   return <><Header /><main className="info-page"><section className="info-hero"><Eyebrow light>{data.tag}</Eyebrow><h1>{data.title}</h1><p>{data.intro}</p></section><section className="info-body">{data.blocks.map(([title,copy],i)=><Reveal key={title} className="info-block"><span>{String(i+1).padStart(2,"0")}</span><div><h2>{title}</h2><p>{copy}</p></div></Reveal>)}<div className="info-back"><Link to="/" className="underlined-link"><ArrowLeft size={14} /> Back to CIRCL</Link></div></section></main><Footer /></>;
 }
 
+const APPLICATION_API_URL = import.meta.env.VITE_APPLICATION_API_URL || "https://circl-api.onrender.com";
+
 function JoinPage() {
   const [form,setForm]=useState({name:"",email:"",instagram:"",category:"",followers:"",location:"",reason:""});
-  const [emailReady,setEmailReady]=useState(false);
+  const [submitting,setSubmitting]=useState(false);
+  const [submissionMessage,setSubmissionMessage]=useState("");
+  const [submissionError,setSubmissionError]=useState(false);
   const update=(key:keyof typeof form,value:string)=>setForm(old=>({...old,[key]:value}));
-  const submit=(event:FormEvent<HTMLFormElement>)=>{
+  const submit=async(event:FormEvent<HTMLFormElement>)=>{
     event.preventDefault();
-    const applicationDetails=[
-      "CIRCL — Founding Creator Application",
-      "",
-      `Full name: ${form.name}`,
-      `Contact email: ${form.email}`,
-      `Instagram username: ${form.instagram}`,
-      `Content category: ${form.category}`,
-      `Follower range: ${form.followers}`,
-      `Primary audience location: ${form.location || "Not provided"}`,
-      "",
-      "What I create and why I want to join CIRCL:",
-      form.reason
-    ].join("\n");
-    const subject=encodeURIComponent(`CIRCL creator application — ${form.instagram}`);
-    const body=encodeURIComponent(applicationDetails);
-    setEmailReady(true);
-    window.location.href=`mailto:deepchandravadiya593@gmail.com?subject=${subject}&body=${body}`;
+    if(submitting)return;
+    setSubmitting(true);
+    setSubmissionMessage("");
+    setSubmissionError(false);
+    try {
+      const response=await fetch(`${APPLICATION_API_URL}/api/applications`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(form)
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.error||"We could not submit your application. Please try again.");
+      setSubmissionMessage(result.emailed
+        ? "Your application has been securely saved, and an email notification has been sent to the CIRCL team. Thank you for applying."
+        : "Your application has been securely saved. The email notification is delayed, but your application is received.");
+      setForm({name:"",email:"",instagram:"",category:"",followers:"",location:"",reason:""});
+    } catch(error) {
+      setSubmissionError(true);
+      setSubmissionMessage(error instanceof Error?error.message:"Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   return <><Header /><main className="join-page"><section className="info-hero join-hero"><Eyebrow light>THE FOUNDING CIRCLE / APPLICATION</Eyebrow><h1>There is room<br />for your <em>point of view.</em></h1><p>Tell us what you create. We are bringing together the first group of independent creators across India.</p></section><section className="join-content"><div className="join-aside"><span>THE FIRST CIRCLE</span><h2>Come as you are.<br /><em>Contribute what you do.</em></h2><p>Participation is voluntary. We review applications for relevance, authenticity and a genuine interest in collaboration. There is no follower-count promise.</p><div className="join-aside-note"><Check size={15} /> No follow-for-follow<br /><Check size={15} /> No paid follower schemes<br /><Check size={15} /> Your content stays yours</div></div><form className="creator-form" onSubmit={submit}><div className="form-title form-wide"><span>01 — YOUR DETAILS</span><p>All fields marked * are required.</p></div>
     <label>Full name *<input required value={form.name} onChange={e=>update("name",e.target.value)} placeholder="Your name" /></label><label>Contact email *<input required type="email" value={form.email} onChange={e=>update("email",e.target.value)} placeholder="you@example.com" /></label><label>Instagram username *<input required value={form.instagram} onChange={e=>update("instagram",e.target.value)} placeholder="@yourhandle" /></label>
     <label>Content category *<select required value={form.category} onChange={e=>update("category",e.target.value)}><option value="">Choose your world</option><option>Fashion & personal style</option><option>Daily lifestyle</option><option>Beauty & grooming</option><option>Other lifestyle content</option></select></label>
     <label>Follower range *<select required value={form.followers} onChange={e=>update("followers",e.target.value)}><option value="">Select range</option><option>Under 1,000</option><option>1,000–5,000</option><option>5,001–10,000</option><option>10,001–25,000</option><option>25,001–50,000</option><option>50,001–100,000</option><option>100,000+</option></select></label><label>Primary audience location<input value={form.location} onChange={e=>update("location",e.target.value)} placeholder="City / State / India" /></label>
     <label className="form-wide">What do you create, and why CIRCL? *<textarea required value={form.reason} onChange={e=>update("reason",e.target.value)} placeholder="Tell us about your content and what you would bring to the network." rows={4} /></label><label className="consent form-wide"><input required type="checkbox" /><span>I have read the <Link to="/guidelines">Creator Guidelines</Link> and <Link to="/privacy">Privacy Policy</Link>. I understand that organic growth is not guaranteed.</span></label>
-    <button className="button button-black form-wide" type="submit">Prepare my application <ArrowUpRight size={15} /></button>{emailReady&&<p className="form-success form-wide"><Check size={15} /> Your email app has been asked to open with your application drafted. Review the details and press Send to submit it.</p>}<p className="form-note form-wide">Your application details are placed into an email draft on your device. CIRCL does not receive them until you send the email.</p>
+    <button className="button button-black form-wide" type="submit" disabled={submitting}>{submitting?"Submitting securely…":"Prepare my application"} <ArrowUpRight size={15} /></button>{submissionMessage&&<p className={`form-success form-wide ${submissionError?"form-error":""}`} role="status"><Check size={15} /> {submissionMessage}</p>}<p className="form-note form-wide">Your details are sent securely to CIRCL, stored in a private application JSON file and emailed to the CIRCL team. Please submit only information you are comfortable sharing.</p>
   </form></section></main><Footer /></>;
 }
 
