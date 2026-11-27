@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode, type FormEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowDown, ArrowLeft, ArrowUpRight, Check, CircleDot, Menu, MoveUpRight, Sparkles, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUpRight, Check, CircleDot, Mail, Menu, MoveUpRight, Sparkles, Youtube, X } from "lucide-react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 const instagramUrl = ""; // Set this to the verified CIRCL Instagram profile before launch.
@@ -207,7 +207,7 @@ function Home() {
 }
 
 function Footer() {
-  return <footer className="footer"><div className="footer-main"><div><Brand light /><p>A circle of creators.<br />A culture of shared discovery.</p></div><div className="footer-column"><span>EXPLORE</span><Link to="/about">Our story</Link><Link to="/how-it-works">How it works</Link><Link to="/join">Become a creator</Link></div><div className="footer-column"><span>PRINCIPLES</span><Link to="/guidelines">Creator standards</Link><Link to="/transparency">Transparency</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link></div><div className="footer-column"><span>CONNECT</span>{instagramUrl ? <a href={instagramUrl} target="_blank" rel="noreferrer">Instagram <ArrowUpRight size={12} /></a> : <span className="footer-pending">Instagram profile to be connected</span>}<Link to="/join">Creator enquiries <ArrowUpRight size={12} /></Link></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} CIRCL. ALL RIGHTS RESERVED.</span><span>INDEPENDENT BY DESIGN. CONNECTED BY CHOICE.</span></div></footer>;
+  return <footer className="footer"><div className="footer-main"><div><Brand light /><p>A circle of creators.<br />A culture of shared discovery.</p></div><div className="footer-column"><span>EXPLORE</span><Link to="/about">Our story</Link><Link to="/how-it-works">How it works</Link><Link to="/join">Become a creator</Link></div><div className="footer-column"><span>PRINCIPLES</span><Link to="/guidelines">Creator standards</Link><Link to="/transparency">Transparency</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link></div><div className="footer-column"><span>CONNECT</span><div className="footer-socials"><a className="footer-social-link" href="https://www.youtube.com/channel/UCtmOiMwLDNQ13SVQcTFT_0Q" target="_blank" rel="noopener noreferrer" aria-label="CIRCL on YouTube" title="Visit CIRCL on YouTube"><Youtube size={19} strokeWidth={1.7} /><span>YouTube</span><ArrowUpRight size={12} /></a><a className="footer-social-link" href="mailto:deepchandravadiya593@gmail.com" aria-label="Email CIRCL" title="Email CIRCL"><Mail size={18} strokeWidth={1.7} /><span>Email us</span><ArrowUpRight size={12} /></a></div><Link to="/join">Creator enquiries <ArrowUpRight size={12} /></Link></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} CIRCL. ALL RIGHTS RESERVED.</span><span>INDEPENDENT BY DESIGN. CONNECTED BY CHOICE.</span></div></footer>;
 }
 
 const pageContent: Record<string, { tag: string; title: string; intro: string; blocks: [string,string][] }> = {
@@ -227,20 +227,34 @@ function InfoPage({ page }: { page: string }) {
 
 function JoinPage() {
   const [form,setForm]=useState({name:"",email:"",instagram:"",category:"",followers:"",location:"",reason:""});
-  const [copied,setCopied]=useState(false);
+  const [emailReady,setEmailReady]=useState(false);
   const update=(key:keyof typeof form,value:string)=>setForm(old=>({...old,[key]:value}));
-  const submit=async(event:FormEvent<HTMLFormElement>)=>{
+  const submit=(event:FormEvent<HTMLFormElement>)=>{
     event.preventDefault();
-    const message=["CIRCL — Founding Creator Application","",...Object.entries(form).map(([key,value])=>key.toUpperCase()+": "+value)].join("\n");
-    try{await navigator.clipboard.writeText(message);setCopied(true);}
-    catch{setCopied(false);window.alert("Please copy your application details and contact CIRCL through Instagram.");}
+    const applicationDetails=[
+      "CIRCL — Founding Creator Application",
+      "",
+      `Full name: ${form.name}`,
+      `Contact email: ${form.email}`,
+      `Instagram username: ${form.instagram}`,
+      `Content category: ${form.category}`,
+      `Follower range: ${form.followers}`,
+      `Primary audience location: ${form.location || "Not provided"}`,
+      "",
+      "What I create and why I want to join CIRCL:",
+      form.reason
+    ].join("\\n");
+    const subject=encodeURIComponent(`CIRCL creator application — ${form.instagram}`);
+    const body=encodeURIComponent(applicationDetails);
+    setEmailReady(true);
+    window.location.href=`mailto:deepchandravadiya593@gmail.com?subject=${subject}&body=${body}`;
   };
   return <><Header /><main className="join-page"><section className="info-hero join-hero"><Eyebrow light>THE FOUNDING CIRCLE / APPLICATION</Eyebrow><h1>There is room<br />for your <em>point of view.</em></h1><p>Tell us what you create. We are bringing together the first group of independent creators across India.</p></section><section className="join-content"><div className="join-aside"><span>THE FIRST CIRCLE</span><h2>Come as you are.<br /><em>Contribute what you do.</em></h2><p>Participation is voluntary. We review applications for relevance, authenticity and a genuine interest in collaboration. There is no follower-count promise.</p><div className="join-aside-note"><Check size={15} /> No follow-for-follow<br /><Check size={15} /> No paid follower schemes<br /><Check size={15} /> Your content stays yours</div></div><form className="creator-form" onSubmit={submit}><div className="form-title form-wide"><span>01 — YOUR DETAILS</span><p>All fields marked * are required.</p></div>
     <label>Full name *<input required value={form.name} onChange={e=>update("name",e.target.value)} placeholder="Your name" /></label><label>Contact email *<input required type="email" value={form.email} onChange={e=>update("email",e.target.value)} placeholder="you@example.com" /></label><label>Instagram username *<input required value={form.instagram} onChange={e=>update("instagram",e.target.value)} placeholder="@yourhandle" /></label>
     <label>Content category *<select required value={form.category} onChange={e=>update("category",e.target.value)}><option value="">Choose your world</option><option>Fashion & personal style</option><option>Daily lifestyle</option><option>Beauty & grooming</option><option>Other lifestyle content</option></select></label>
     <label>Follower range *<select required value={form.followers} onChange={e=>update("followers",e.target.value)}><option value="">Select range</option><option>Under 1,000</option><option>1,000–5,000</option><option>5,001–10,000</option><option>10,001–25,000</option><option>25,001–50,000</option><option>50,001–100,000</option><option>100,000+</option></select></label><label>Primary audience location<input value={form.location} onChange={e=>update("location",e.target.value)} placeholder="City / State / India" /></label>
     <label className="form-wide">What do you create, and why CIRCL? *<textarea required value={form.reason} onChange={e=>update("reason",e.target.value)} placeholder="Tell us about your content and what you would bring to the network." rows={4} /></label><label className="consent form-wide"><input required type="checkbox" /><span>I have read the <Link to="/guidelines">Creator Guidelines</Link> and <Link to="/privacy">Privacy Policy</Link>. I understand that organic growth is not guaranteed.</span></label>
-    <button className="button button-black form-wide" type="submit">Prepare my application <ArrowUpRight size={15} /></button>{copied&&<p className="form-success form-wide"><Check size={15} /> Application copied. It has not been sent or uploaded. CIRCL will add its official submission contact before applications open.</p>}<p className="form-note form-wide">This form currently prepares your application locally. It does not send or store your personal information. A secure application service will be connected before public onboarding.</p>
+    <button className="button button-black form-wide" type="submit">Prepare my application <ArrowUpRight size={15} /></button>{emailReady&&<p className="form-success form-wide"><Check size={15} /> Your email app has been asked to open with your application drafted. Review the details and press Send to submit it.</p>}<p className="form-note form-wide">Your application details are placed into an email draft on your device. CIRCL does not receive them until you send the email.</p>
   </form></section></main><Footer /></>;
 }
 
