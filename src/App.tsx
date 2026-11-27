@@ -243,7 +243,7 @@ function JoinPage() {
       "",
       "What I create and why I want to join CIRCL:",
       form.reason
-    ].join("\\n");
+    ].join("\n");
     const subject=encodeURIComponent(`CIRCL creator application — ${form.instagram}`);
     const body=encodeURIComponent(applicationDetails);
     setEmailReady(true);
