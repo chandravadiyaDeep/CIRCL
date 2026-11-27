@@ -50,3 +50,12 @@
 .network-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:3px}.network-stats>span{display:flex;flex-direction:column;gap:2px;border-left:1px solid rgba(255,255,255,.17);padding-left:8px}.network-stats strong{font:500 16px var(--serif);color:#d5c5df}.network-stats small{font-size:5px;letter-spacing:.08em;color:#a9a0ad}
 .story-creator-peek{position:absolute;z-index:5;left:10px;right:10px;bottom:34px;display:flex;align-items:center;gap:9px;padding:10px;background:#f0ede5;color:#201f1c;box-shadow:0 10px 25px rgba(0,0,0,.32)}.story-peek-avatar{width:32px;height:32px;flex:0 0 32px;border-radius:50%;display:grid;place-items:center;background:#b9a98c;color:#171714;font-size:8px;font-weight:800}.story-peek-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}.story-peek-copy strong{font-size:9px}.story-peek-copy small{font-size:7px;color:#716b60;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.story-creator-peek>button{border:0;background:none;color:#49443b;padding:4px}
 @media(max-width:760px){.category-photo{height:260px!important}.category-low .category-photo{height:310px!important}.story-visual{padding:14px 12px 11px}.story-visual-kicker{font-size:6px}.reach-headline,.connect-heading,.network-heading{margin-top:16px}.reach-headline>strong,.connect-heading>strong,.network-heading>strong{font-size:22px}.reach-headline>span{font-size:15px}.reach-stage{height:115px}.connect-map,.network-field{height:160px}.connect-node span{width:29px;height:29px}.network-node{width:21px;height:21px}.network-core{width:59px;height:59px}.network-stats strong{font-size:14px}.story-visual-foot{font-size:5px}}
+
+
+/* Footer social contact links */
+.footer-socials{display:flex;flex-direction:column;gap:10px;margin:0 0 5px}
+.footer-social-link{display:inline-flex;align-items:center;gap:9px;color:#c1beb6;font-size:10px;transition:color .2s,transform .2s}
+.footer-social-link svg:first-child{color:#c5b394;transition:transform .2s,color .2s}
+.footer-social-link:hover{color:#fff;transform:translateX(3px)}
+.footer-social-link:hover svg:first-child{color:#fff;transform:scale(1.12)}
+.footer-social-link svg:last-child{opacity:.65}
