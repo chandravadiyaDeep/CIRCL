@@ -107,7 +107,7 @@ async function saveApplication(application) {
 
 async function sendApplicationEmail(application) {
   if (!GMAIL_USER || !GMAIL_APP_PASSWORD || !EMAIL_FROM) {
-    return { sent: false, reason: "Gmail SMTP is not configured yet." };
+    throw new Error("Gmail SMTP is not configured yet.");
   }
   const text = [
     "A new CIRCL founding creator application was submitted.",
