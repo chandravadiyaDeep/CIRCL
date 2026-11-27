@@ -2,13 +2,15 @@ import http from "node:http";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
+import nodemailer from "nodemailer";
 
 const PORT = Number(process.env.PORT || 10000);
 const DATA_DIR = process.env.DATA_DIR || "/var/data";
 const DATA_FILE = path.join(DATA_DIR, "applications.json");
 const ADMIN_API_KEY = process.env.ADMIN_API_KEY || "";
-const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
-const EMAIL_FROM = process.env.EMAIL_FROM || "";
+const GMAIL_USER = process.env.GMAIL_USER || "";
+const GMAIL_APP_PASSWORD = (process.env.GMAIL_APP_PASSWORD || "").replace(/\\s/g, "");
+const EMAIL_FROM = process.env.EMAIL_FROM || GMAIL_USER;
 const EMAIL_TO = process.env.EMAIL_TO || "deepchandravadiya593@gmail.com";
 const ALLOWED_ORIGINS = new Set([
   "https://chandraviyadeep.github.io",
@@ -104,8 +106,8 @@ async function saveApplication(application) {
 }
 
 async function sendApplicationEmail(application) {
-  if (!RESEND_API_KEY || !EMAIL_FROM) {
-    return { sent: false, reason: "Email service is not configured yet." };
+  if (!GMAIL_USER || !GMAIL_APP_PASSWORD || !EMAIL_FROM) {
+    return { sent: false, reason: "Gmail SMTP is not configured yet." };
   }
   const text = [
     "A new CIRCL founding creator application was submitted.",
@@ -121,25 +123,18 @@ async function sendApplicationEmail(application) {
     "",
     "What they create and why they want to join CIRCL:",
     application.reason
-  ].join("\n");
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      from: EMAIL_FROM,
-      to: [EMAIL_TO],
-      reply_to: application.email,
-      subject: `CIRCL creator application — @${application.instagram}`,
-      text
-    })
+  ].join("\\n");
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD }
   });
-  if (!response.ok) {
-    const details = await response.text();
-    throw new Error(`Email provider returned ${response.status}: ${details.slice(0, 300)}`);
-  }
+  await transporter.sendMail({
+    from: `CIRCL Applications <${EMAIL_FROM}>`,
+    to: EMAIL_TO,
+    replyTo: application.email,
+    subject: `CIRCL creator application — @${application.instagram}`,
+    text
+  });
   return { sent: true };
 }
 
