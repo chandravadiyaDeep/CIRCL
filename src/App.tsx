@@ -3,8 +3,6 @@ import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer
 import { ArrowDown, ArrowLeft, ArrowUpRight, Check, CircleDot, Mail, Menu, MoveUpRight, Sparkles, Youtube, X } from "lucide-react";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
-const instagramUrl = ""; // Set this to the verified CIRCL Instagram profile before launch.
-
 const fadeUp: Variants = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: "easeOut" } } };
 
 function Intro() {
