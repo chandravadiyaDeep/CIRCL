@@ -34,7 +34,7 @@ The app is configured with Vite base path `/CIRCL/` and hash routing, so routes 
 ## Before public creator onboarding
 
 1. Set the official CIRCL Instagram URL in `src/App.tsx`.
-2. Connect a secure creator application backend or form service. The current application form only prepares/copies an application locally; it does not upload or store data.
+2. Deploy the `circl-api` backend using `render.yaml`, attach its persistent disk, and configure the Resend email credentials described below.
 3. Add a real referral analytics endpoint before describing referral click tracking as active.
 4. Complete the Privacy Policy and Terms with the actual operator identity, contact address, service providers, retention rules and applicable legal review.
 5. Replace editorial image URLs with owned/licensed brand photography when available.
@@ -50,3 +50,29 @@ The app is configured with Vite base path `/CIRCL/` and hash routing, so routes 
 - Instagram is the initial and only community platform
 
 The site does not include advertising sales, payments, subscriptions or monetization features.
+
+## Creator application backend (JSON file + email)
+
+The Join form posts to `https://circl-api.onrender.com/api/applications`. The backend is a small Node.js service in `backend/` and stores each submission in the private persistent file `/var/data/applications.json`. It does not use a database. The file is outside the public website repository.
+
+### Deploy
+
+1. In Render, create a new **Web Service** from this repository and use the included `render.yaml` blueprint (or set root directory to `backend`, build command `npm install`, start command `npm start`).
+2. Keep the persistent disk mounted at `/var/data`. The included Render configuration uses a paid Starter web service because free instances do not provide persistent disks. Do not remove the disk or the JSON file can be lost.
+3. In Resend, create an API key and verify a sender domain you control. Set `RESEND_API_KEY` and `EMAIL_FROM` in the Render environment. `EMAIL_FROM` must use the verified domain, for example `CIRCL Applications <applications@your-domain.com>`.
+4. Keep `EMAIL_TO` set to `deepchandravadiya593@gmail.com`. Render generates `ADMIN_API_KEY` from the blueprint; save it privately.
+5. The Render service URL should be `https://circl-api.onrender.com` to match the website's configured API URL. If Render assigns another name, update `APPLICATION_API_URL` in `src/App.tsx` and redeploy GitHub Pages.
+6. Test `https://circl-api.onrender.com/health`; it should return JSON with `ok: true`.
+
+### Download applications
+
+Use an authenticated request; never publish the admin key in the frontend:
+```bash
+curl -H "Authorization: Bearer YOUR_ADMIN_API_KEY" https://circl-api.onrender.com/api/admin/applications -o circl-applications.json
+```
+
+The API saves an application before attempting email delivery. If email delivery fails, the application remains safely stored and the website confirms that the notification is delayed. The service includes basic validation, CORS restrictions, rate limiting, and a private authenticated JSON export endpoint.
+
+### Required account setup
+
+The code and Render configuration are prepared in this repository, but the owner must connect their Render account, create/retain the persistent disk, and add the Resend API key plus a verified sender domain. Those credentials cannot safely be created or guessed from this repository.
