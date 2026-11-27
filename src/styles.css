@@ -59,3 +59,9 @@
 .footer-social-link:hover{color:#fff;transform:translateX(3px)}
 .footer-social-link:hover svg:first-child{color:#fff;transform:scale(1.12)}
 .footer-social-link svg:last-child{opacity:.65}
+
+
+/* Creator application submission states */
+.creator-form button:disabled{opacity:.62;cursor:wait;transform:none}
+.creator-form .form-error{color:#a94d42}
+.creator-form .form-success{align-items:flex-start;line-height:1.6}

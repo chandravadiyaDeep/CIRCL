@@ -213,7 +213,7 @@ const pageContent: Record<string, { tag: string; title: string; intro: string; b
   "how-it-works":{tag:"THE PROCESS",title:"One circle. Four ways to connect.",intro:"A simple Instagram-first process that brings creators together and gives audiences more ways to discover content.",blocks:[["01 — Creators join","Creators apply to participate. CIRCL reviews content relevance, profile authenticity and willingness to collaborate. Acceptance is not automatic."],["02 — Share an invitation","Participating creators may share their unique CIRCL invitation link through an Instagram Story, profile link or another agreed placement."],["03 — Audiences discover","CIRCL introduces participating creators and shares relevant updates. Members can explore profiles and choose who they want to follow. Following every creator is never required."],["04 — Collaborate and learn","Creators can propose joint Reels, Collab posts and introductions. Each creator approves their own participation and content before publication. Available campaign metrics are reviewed transparently."]]},
   transparency:{tag:"OUR COMMITMENT",title:"Trust is measured in clarity.",intro:"We share what we measure, where the data comes from and where attribution has limits. No inflated claims. No guaranteed growth promises.",blocks:[["What we can measure","Story reach and link taps from creator-provided Instagram Insights; referral-link clicks recorded by the CIRCL website; Broadcast Channel membership changes where available; and Reels reach and interactions from Instagram Insights."],["What a link tells us","A unique referral code can tell us that a visitor clicked a creator's invitation link. A click is not proof that the visitor joined a channel or followed a creator."],["Attribution has limits","Instagram does not provide CIRCL with a complete person-level journey from a website click to a channel join and then a creator follow. Channel growth during a campaign is a time-window comparison, not proof that every new member came from a particular creator."],["Data minimisation","Referral identifiers should not contain personal information. CIRCL does not need Instagram passwords, private-message access or follower lists to operate its initial network. We do not use hidden fingerprinting or sell audience data."]]},
   guidelines:{tag:"THE CIRCL STANDARD",title:"A shared network. Shared responsibility.",intro:"These founding creator standards explain how CIRCL participation works. Each creator confirms the final agreement during onboarding.",blocks:[["Participation","Creators participate voluntarily and contribute to activities they have accepted. There is no compulsory follow-for-follow. Participation does not guarantee followers, reach or a particular outcome."],["Promotion","Creator features are fair, relevant and approved. Spam, fake giveaways, misleading claims and unapproved paid advertisements are not permitted."],["Community conduct","Treat creators and members respectfully. Harassment, discrimination, threats, spam and deceptive engagement tactics are not permitted."],["Content ownership","Creators retain ownership of original content. CIRCL and other creators must obtain permission before downloading, editing, reposting or reusing creator-owned content."],["CIRCL spaces","CIRCL owns and manages its official Instagram account, website and Broadcast Channel. Participation does not grant account ownership or unrestricted posting rights."],["Leaving the network","A creator may request to leave at any time. CIRCL may pause or end participation for rule violations, safety concerns or misuse of the network."]]},
-  privacy:{tag:"YOUR PRIVACY",title:"Your information deserves care.",intro:"This is a summary of CIRCL's intended privacy approach. The final policy must identify the actual operator, contact details, service providers and retention periods before public applications open.",blocks:[["Information collected","A creator application may request a name, Instagram handle, profile URL, content category, approximate follower range, audience location and contact email. Referral links may record a non-personal referral code, campaign code, page path and click timestamp."],["How it is used","Application details are used to review and manage creator participation. Referral and campaign information is used to understand campaign activity and prepare reports."],["What we never need","CIRCL does not need your Instagram password, authentication code, private messages or a list of your followers. Never send these details."],["Retention and contact","Information should be retained only as long as needed for the stated purpose and applicable requirements. A monitored privacy contact and deletion request process must be configured before public applications open."]]},
+  privacy:{tag:"YOUR PRIVACY",title:"Your information deserves care.",intro:"CIRCL collects creator application details only to review and manage participation. Please read how the application form processes your information before submitting.",blocks:[["Information collected","The application form collects your name, contact email, Instagram username, content category, follower range, optional primary audience location and your written reason for joining."],["Storage and email notification","When you submit, the information is sent over HTTPS to CIRCL's private application service and stored in a JSON file on a persistent server disk. It is not written to the public website repository and is not stored in a database. CIRCL also sends an application notification email to deepchandravadiya593@gmail.com using Gmail SMTP. The application file is accessible only to an authorised administrator."],["How it is used","Application details are used to review creator applications, contact applicants and manage participation. They are not used to sell personal information or to access your Instagram account."],["What we never need","CIRCL does not need your Instagram password, authentication code, private messages or a list of your followers. Never send these details."],["Retention, deletion and contact","Applications are retained in the private JSON file until the CIRCL operator deletes them. A fixed retention period and a monitored privacy request process must be established by the operator before broad public onboarding. For a privacy or deletion request, email deepchandravadiya593@gmail.com. Email notifications may also remain in the recipient mailbox."]]},
   terms:{tag:"TERMS OF USE",title:"Clear terms. Better connections.",intro:"These draft terms cover use of the CIRCL website. Creator participation is also governed by the separately accepted Creator Agreement.",blocks:[["Use of the website","Use this website lawfully and respectfully. Do not attempt to disrupt the website, probe systems without authorization or submit malicious content."],["No growth guarantee","CIRCL provides opportunities for organic discovery and collaboration. It does not promise follower counts, views, reach, engagement or channel joins. Platform distribution and audience behaviour are outside CIRCL's control."],["Creator content","Creators retain rights to their own content. Application or participation does not transfer ownership to CIRCL. Any permission to feature or reuse content should be specific and documented."],["Third-party platforms","Instagram is a third-party service. Its features, eligibility, availability and policies may change, and use is subject to Instagram's own terms."],["Legal details","The operator's legal name, contact address and appropriate governing-law details must be completed and reviewed for applicable Indian law before public launch."]]}
 };
 
@@ -223,36 +223,45 @@ function InfoPage({ page }: { page: string }) {
   return <><Header /><main className="info-page"><section className="info-hero"><Eyebrow light>{data.tag}</Eyebrow><h1>{data.title}</h1><p>{data.intro}</p></section><section className="info-body">{data.blocks.map(([title,copy],i)=><Reveal key={title} className="info-block"><span>{String(i+1).padStart(2,"0")}</span><div><h2>{title}</h2><p>{copy}</p></div></Reveal>)}<div className="info-back"><Link to="/" className="underlined-link"><ArrowLeft size={14} /> Back to CIRCL</Link></div></section></main><Footer /></>;
 }
 
+const APPLICATION_API_URL = "https://circl-api.onrender.com";
+
 function JoinPage() {
   const [form,setForm]=useState({name:"",email:"",instagram:"",category:"",followers:"",location:"",reason:""});
-  const [emailReady,setEmailReady]=useState(false);
+  const [submitting,setSubmitting]=useState(false);
+  const [submissionMessage,setSubmissionMessage]=useState("");
+  const [submissionError,setSubmissionError]=useState(false);
   const update=(key:keyof typeof form,value:string)=>setForm(old=>({...old,[key]:value}));
-  const submit=(event:FormEvent<HTMLFormElement>)=>{
+  const submit=async(event:FormEvent<HTMLFormElement>)=>{
     event.preventDefault();
-    const applicationDetails=[
-      "CIRCL — Founding Creator Application",
-      "",
-      `Full name: ${form.name}`,
-      `Contact email: ${form.email}`,
-      `Instagram username: ${form.instagram}`,
-      `Content category: ${form.category}`,
-      `Follower range: ${form.followers}`,
-      `Primary audience location: ${form.location || "Not provided"}`,
-      "",
-      "What I create and why I want to join CIRCL:",
-      form.reason
-    ].join("\n");
-    const subject=encodeURIComponent(`CIRCL creator application — ${form.instagram}`);
-    const body=encodeURIComponent(applicationDetails);
-    setEmailReady(true);
-    window.location.href=`mailto:deepchandravadiya593@gmail.com?subject=${subject}&body=${body}`;
+    if(submitting)return;
+    setSubmitting(true);
+    setSubmissionMessage("");
+    setSubmissionError(false);
+    try {
+      const response=await fetch(`${APPLICATION_API_URL}/api/applications`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(form)
+      });
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(result.error||"We could not submit your application. Please try again.");
+      setSubmissionMessage(result.emailed
+        ? "Your application has been securely saved, and an email notification has been sent to the CIRCL team. Thank you for applying."
+        : "Your application has been securely saved. The email notification is delayed, but your application is received.");
+      setForm({name:"",email:"",instagram:"",category:"",followers:"",location:"",reason:""});
+    } catch(error) {
+      setSubmissionError(true);
+      setSubmissionMessage(error instanceof Error?error.message:"Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   return <><Header /><main className="join-page"><section className="info-hero join-hero"><Eyebrow light>THE FOUNDING CIRCLE / APPLICATION</Eyebrow><h1>There is room<br />for your <em>point of view.</em></h1><p>Tell us what you create. We are bringing together the first group of independent creators across India.</p></section><section className="join-content"><div className="join-aside"><span>THE FIRST CIRCLE</span><h2>Come as you are.<br /><em>Contribute what you do.</em></h2><p>Participation is voluntary. We review applications for relevance, authenticity and a genuine interest in collaboration. There is no follower-count promise.</p><div className="join-aside-note"><Check size={15} /> No follow-for-follow<br /><Check size={15} /> No paid follower schemes<br /><Check size={15} /> Your content stays yours</div></div><form className="creator-form" onSubmit={submit}><div className="form-title form-wide"><span>01 — YOUR DETAILS</span><p>All fields marked * are required.</p></div>
     <label>Full name *<input required value={form.name} onChange={e=>update("name",e.target.value)} placeholder="Your name" /></label><label>Contact email *<input required type="email" value={form.email} onChange={e=>update("email",e.target.value)} placeholder="you@example.com" /></label><label>Instagram username *<input required value={form.instagram} onChange={e=>update("instagram",e.target.value)} placeholder="@yourhandle" /></label>
     <label>Content category *<select required value={form.category} onChange={e=>update("category",e.target.value)}><option value="">Choose your world</option><option>Fashion & personal style</option><option>Daily lifestyle</option><option>Beauty & grooming</option><option>Other lifestyle content</option></select></label>
     <label>Follower range *<select required value={form.followers} onChange={e=>update("followers",e.target.value)}><option value="">Select range</option><option>Under 1,000</option><option>1,000–5,000</option><option>5,001–10,000</option><option>10,001–25,000</option><option>25,001–50,000</option><option>50,001–100,000</option><option>100,000+</option></select></label><label>Primary audience location<input value={form.location} onChange={e=>update("location",e.target.value)} placeholder="City / State / India" /></label>
     <label className="form-wide">What do you create, and why CIRCL? *<textarea required value={form.reason} onChange={e=>update("reason",e.target.value)} placeholder="Tell us about your content and what you would bring to the network." rows={4} /></label><label className="consent form-wide"><input required type="checkbox" /><span>I have read the <Link to="/guidelines">Creator Guidelines</Link> and <Link to="/privacy">Privacy Policy</Link>. I understand that organic growth is not guaranteed.</span></label>
-    <button className="button button-black form-wide" type="submit">Prepare my application <ArrowUpRight size={15} /></button>{emailReady&&<p className="form-success form-wide"><Check size={15} /> Your email app has been asked to open with your application drafted. Review the details and press Send to submit it.</p>}<p className="form-note form-wide">Your application details are placed into an email draft on your device. CIRCL does not receive them until you send the email.</p>
+    <button className="button button-black form-wide" type="submit" disabled={submitting}>{submitting?"Submitting securely…":"Prepare my application"} <ArrowUpRight size={15} /></button>{submissionMessage&&<p className={`form-success form-wide ${submissionError?"form-error":""}`} role="status"><Check size={15} /> {submissionMessage}</p>}<p className="form-note form-wide">Your details are sent securely to CIRCL, stored in a private application JSON file and emailed to the CIRCL team. Please submit only information you are comfortable sharing.</p>
   </form></section></main><Footer /></>;
 }
 
