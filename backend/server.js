@@ -9,7 +9,7 @@ const DATA_DIR = process.env.DATA_DIR || "/var/data";
 const DATA_FILE = path.join(DATA_DIR, "applications.json");
 const ADMIN_API_KEY = process.env.ADMIN_API_KEY || "";
 const GMAIL_USER = process.env.GMAIL_USER || "";
-const GMAIL_APP_PASSWORD = (process.env.GMAIL_APP_PASSWORD || "").replace(/\\s/g, "");
+const GMAIL_APP_PASSWORD = (process.env.GMAIL_APP_PASSWORD || "").replace(/\s/g, "");
 const EMAIL_FROM = process.env.EMAIL_FROM || GMAIL_USER;
 const EMAIL_TO = process.env.EMAIL_TO || "deepchandravadiya593@gmail.com";
 const ALLOWED_ORIGINS = new Set([
@@ -123,7 +123,7 @@ async function sendApplicationEmail(application) {
     "",
     "What they create and why they want to join CIRCL:",
     application.reason
-  ].join("\\n");
+  ].join("\n");
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD }
